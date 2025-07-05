@@ -18,6 +18,11 @@ import toml
 import tzlocal
 
 
+@click.group()
+def cli() -> None:
+    """Invoke a CLI tool for managing templated documents."""
+
+
 def _get_docs_directory() -> Path:
     """Determine the docs directory based on environment, pyproject.toml, or prompt."""
     docs_dir: Path | None = None
@@ -199,7 +204,7 @@ def _generate_document_content(
     return new_doc_content
 
 
-@click.command()
+@cli.command("new")
 @click.argument("title", required=False, type=str)
 @click.option(
     "--simple",
@@ -227,7 +232,7 @@ def _generate_document_content(
     type=str,
     help="Optional document type for the document.",
 )
-def main(
+def new_doc_command(
     title: str | None,
     template_type: str | None,
     priority: str | None,
@@ -281,6 +286,10 @@ def main(
         f.write(new_doc_content)
 
     click.echo(f"✓ Document created successfully at {new_doc_path}")
+
+
+def main() -> None:
+    cli()
 
 
 if __name__ == "__main__":

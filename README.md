@@ -11,7 +11,7 @@ The core functionality is provided by the `new-doc` script, which allows users t
 **Usage:**
 
 ```bash
-new-doc [TITLE] [OPTIONS]
+uvx pape-docs new
 ```
 
 **Options:**
@@ -72,7 +72,8 @@ ruff format .
 
 ### Testing
 
-Tests are written using `pytest`.
+Tests will be written using `pytest`.
 
 ```bash
 pytest
+```

@@ -1,6 +1,6 @@
 [project]
 name = "pape-docs"
-version = "0.1.0"
+version = "0.2.0"
 description = "A tool for flexibly managing templated docs of all kinds."
 readme = "README.md"
 requires-python = ">=3.13"
@@ -15,7 +15,7 @@ requires = ["hatchling>=1.27.0"]
 build-backend = "hatchling.build"
 
 [project.scripts]
-new-doc = "src.new_doc:main"
+pape-docs = "src.new_doc:main"
 
 [tool.hatch.build.targets.wheel]
 packages = ["src"]
