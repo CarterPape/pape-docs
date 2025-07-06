@@ -289,7 +289,11 @@ def new_doc_command(
 
 
 def main() -> None:
-    """Invoke the cli while requiring a sub-command such as `new` (e.g. `pape-docs new`)."""
+    """
+    Invoke the cli while requiring a sub-command such as `new`.
+
+    This enables us to do `uvx pape-docs new` instead of `uvx new-doc --from pape-docs`.
+    """
     cli()
 
 
