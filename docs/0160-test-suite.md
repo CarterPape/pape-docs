@@ -14,6 +14,10 @@ Wherever the test I'm describing would really just test how `click` or `uv` or a
 
 We should only test our own capabilities; our tests should not be brittle to other libraries changing (unless they are breaking changes we need to account for in package management).
 
+As with my other projects, the test suite should be located in `test` or `tests`, and the structure should mirror `src`.
+
+If one file has many tests that should be broken up into multiple files, it is acceptable to make a directory of test files for a single source document.
+
 ### Regular cases
 
 - The script should correctly handle every normal case related to the docs directory and `pyproject.toml` location/variables/existence.
