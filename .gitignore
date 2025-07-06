@@ -12,6 +12,9 @@ dist/
 *.egg
 MANIFEST
 
+# Caching artifacts
+.ruff_cache/
+
 # Python bytecode and compiled files
 __pycache__/
 *.py[cod]
