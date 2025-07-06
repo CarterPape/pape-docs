@@ -289,6 +289,7 @@ def new_doc_command(
 
 
 def main() -> None:
+    """Invoke the cli while requiring a sub-command such as `new` (e.g. `pape-docs new`)."""
     cli()
 
 
