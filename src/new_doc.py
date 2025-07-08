@@ -84,6 +84,39 @@ def _get_docs_directory() -> Path:
     return docs_dir
 
 
+def _perform_write_test(docs_dir: Path) -> None:
+    """Perform an early write test to ensure the docs directory is writable."""
+    test_file = docs_dir / ".pape-docs-write-test.tmp"
+    try:
+        # Attempt to create and write to the file
+        with test_file.open("w", encoding="utf-8") as f:
+            f.write("test")
+    except FileNotFoundError as file_not_found_error:
+        error_message = (
+            f"Docs directory '{docs_dir}' does not exist or is not accessible. "
+            "Please ensure the directory exists and has proper permissions."
+        )
+        raise click.ClickException(error_message) from file_not_found_error
+    except OSError as os_error:
+        error_message = (
+            f"Cannot write to docs directory '{docs_dir}' due to a permission error. "
+            "Please check your write permissions for this directory."
+        )
+        raise click.ClickException(error_message) from os_error
+    except Exception as exception:
+        error_message = f"Error writing to docs directory: {exception}"
+        raise click.ClickException(error_message) from exception
+
+    try:
+        test_file.unlink()
+    except Exception as exception:
+        error_message = (
+            f"Error deleting temporary file '{test_file}'. You may need to delete "
+            f"it manually. {exception}"
+        )
+        raise click.ClickException(error_message) from exception
+
+
 def _ensure_docs_directory_exists(docs_dir: Path) -> None:
     """Ensure the docs directory exists, prompting to create it if necessary."""
     if not docs_dir.exists():
@@ -91,15 +124,20 @@ def _ensure_docs_directory_exists(docs_dir: Path) -> None:
             try:
                 docs_dir.mkdir(exist_ok=True)
                 click.echo(f"✓ Created docs directory: {docs_dir}")
+            except PermissionError as permission_error:
+                error_message = (
+                    f"Could not create '{docs_dir}' because of insufficientpermissions."
+                )
+                raise click.ClickException(error_message) from permission_error
             except FileNotFoundError as file_not_found_error:
                 error_message = (
-                    f"'{docs_dir}' could not be created because the parent directory "
-                    f'does not exist. Fix with `mkdir -p "{docs_dir.parent}"`'
+                    f"Could not create '{docs_dir}' because the parent directory "
+                    f'does not exist. Fix with `mkdir -p "{docs_dir}"`'
                 )
                 raise click.ClickException(error_message) from file_not_found_error
-            except Exception as e:
-                error_message = f"Error creating docs directory '{docs_dir}': {e}"
-                raise click.ClickException(error_message) from e
+            except Exception as exception:
+                error_message = f"Error creating docs directory: {exception}"
+                raise click.ClickException(error_message) from exception
         else:
             click.echo("Operation cancelled. Docs directory not created.")
             raise click.Abort
@@ -145,6 +183,7 @@ def _prompt_for_missing_arguments(
             default="????",
             show_default=False,
         )
+
     if template_type is None:
         error_message = "Template type cannot be None after prompting."
         raise ValueError(error_message)
@@ -154,6 +193,7 @@ def _prompt_for_missing_arguments(
     if doc_type is None:
         error_message = "Document type cannot be None after prompting."
         raise ValueError(error_message)
+
     return title, template_type, priority, doc_type
 
 
@@ -257,6 +297,7 @@ def new_doc_command(
 
     docs_dir = _get_docs_directory()
     _ensure_docs_directory_exists(docs_dir)
+    _perform_write_test(docs_dir)
 
     title, template_type, priority, doc_type = _prompt_for_missing_arguments(
         title,
