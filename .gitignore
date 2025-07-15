@@ -44,3 +44,8 @@ yolo-models/
 
 # Cline
 memory-bank/
+
+# Test artifacts
+
+# Test coverage artifacts
+.coverage

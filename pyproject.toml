@@ -1,6 +1,6 @@
 [project]
 name = "pape-docs"
-version = "0.2.1"
+version = "0.2.2"
 description = "A tool for flexibly managing templated docs of all kinds."
 readme = "README.md"
 requires-python = ">=3.13"
@@ -19,7 +19,7 @@ pape-docs = "src.new_doc:main"
 new-doc = "src.new_doc:new_doc_command"
 
 [tool.hatch.build.targets.wheel]
-packages = ["src"]
+packages = ["src", "templates"]
 
 [tool.uv]
 package = true
@@ -43,7 +43,11 @@ ignore = [
 ]
 
 [tool.ruff.lint.per-file-ignores]
-"test/*" = [
-    "SLF001", # protected-access: Tests should be allowed to modify the protected methods and variables of the instances and classes they are testing
-    "S101",   # assert: Tests rely on assertions
+"tests/*" = [
+    "SLF001",  # protected-access: Tests should be allowed to modify the protected methods and variables of the instances and classes they are testing
+    "S101",    # assert: Tests rely on assertions
+    "PLR0913", # too-many-arguments: Tests sometitmes need to mock a bunch of dependencies
 ]
+
+[tool.coverage.run]
+omit = ["tests/*"]

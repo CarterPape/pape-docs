@@ -299,12 +299,15 @@ def new_doc_command(
     _ensure_docs_directory_exists(docs_dir)
     _perform_write_test(docs_dir)
 
-    title, template_type, priority, doc_type = _prompt_for_missing_arguments(
-        title,
-        template_type,
-        priority,
-        doc_type,
-    )
+    # Only prompt for missing arguments if any are actually missing
+    if title is None or template_type is None or priority is None or doc_type is None:
+        # _prompt_for_missing_arguments will only prompt for the ones that are None
+        title, template_type, priority, doc_type = _prompt_for_missing_arguments(
+            title,
+            template_type,
+            priority,
+            doc_type,
+        )
 
     sanitized_priority, sanitized_title = _sanitize_inputs(title, priority)
 
