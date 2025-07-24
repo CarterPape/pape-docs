@@ -1,3 +1,12 @@
+# # # # # # # # # # # # # # # # # # # #
+# Pape Docs
+# Copyright 2025 Carter Pape
+#
+# See file LICENSE for licensing terms.
+# # # # # # # # # # # # # # # # # # # #
+
+"""Tests for the `helpers.docs_dir_guard` module."""
+
 import pathlib
 from unittest.mock import patch
 

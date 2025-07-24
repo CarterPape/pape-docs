@@ -1,3 +1,12 @@
+# # # # # # # # # # # # # # # # # # # #
+# Pape Docs
+# Copyright 2025 Carter Pape
+#
+# See file LICENSE for licensing terms.
+# # # # # # # # # # # # # # # # # # # #
+
+"""Tests for the `new_doc` module."""
+
 import pathlib
 import subprocess
 import sys

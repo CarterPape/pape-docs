@@ -1,3 +1,12 @@
+# # # # # # # # # # # # # # # # # # # #
+# Pape Docs
+# Copyright 2025 Carter Pape
+#
+# See file LICENSE for licensing terms.
+# # # # # # # # # # # # # # # # # # # #
+
+"""Tests for the `helpers.template_loader` module."""
+
 from collections.abc import Generator
 from datetime import UTC, datetime
 from pathlib import Path
@@ -110,7 +119,8 @@ def test_generate_document_content_convenience_function_consonant_doc_type(
 ) -> None:
     """Test generate_document_content convenience function with a consonant doc_type."""
     content = generate_document_content(
-        templates_dir=mock_templates_dir, doc_type="Story",
+        templates_dir=mock_templates_dir,
+        doc_type="Story",
     )
     assert "Template content July 22, 2025 Story A doc." in content
 
@@ -121,6 +131,7 @@ def test_generate_document_content_convenience_function_vowel_doc_type(
 ) -> None:
     """Test generate_document_content convenience function with a vowel doc_type."""
     content = generate_document_content(
-        templates_dir=mock_templates_dir, doc_type="Idea",
+        templates_dir=mock_templates_dir,
+        doc_type="Idea",
     )
     assert "Template content July 22, 2025 Idea An doc." in content

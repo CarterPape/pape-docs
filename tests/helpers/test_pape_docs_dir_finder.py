@@ -1,3 +1,12 @@
+# # # # # # # # # # # # # # # # # # # #
+# Pape Docs
+# Copyright 2025 Carter Pape
+#
+# See file LICENSE for licensing terms.
+# # # # # # # # # # # # # # # # # # # #
+
+"""Tests for the `helpers.pape_docs_dir_finder` module."""
+
 from pathlib import Path
 
 import pytest

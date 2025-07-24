@@ -1,10 +1,16 @@
+# # # # # # # # # # # # # # # # # # # #
+# Pape Docs
+# Copyright 2025 Carter Pape
+#
+# See file LICENSE for licensing terms.
+# # # # # # # # # # # # # # # # # # # #
+
+"""Tests for the `helpers.file_name_part_retriever` module."""
+
 import io
 from unittest.mock import patch
 
-from src.helpers.file_name_part_retriever import (
-    FileNamePartRetriever,
-    get_sanitized_file_name_part,
-)
+from src.helpers.file_name_part_retriever import FileNamePartRetriever, get_sanitized_file_name_part
 
 
 def test_file_name_part_retriever_init_with_initial_value() -> None:
@@ -116,15 +122,14 @@ def test_get_sanitized_file_name_part_invalid_at_inv_then_valid_interactive() ->
     assert result == "ValidInput"
 
 
-def test_get_sanitized_file_name_part_invalid_interactively_then_valid_interactively() -> (
-    None
-):
+def test_get_sanitized_file_name_part_invalid_interactively_then_valid_interactively() -> None:
     """Test when user provides an all-invalid input interactively."""
     retriever = FileNamePartRetriever(
         argument_name="title",
     )
     with patch(
-        "sys.stdin", io.StringIO("////\nValidInput\n"),
+        "sys.stdin",
+        io.StringIO("////\nValidInput\n"),
     ):  # First all-invalid, then valid
         result = retriever.get_sanitized_file_name_part()
 
@@ -179,9 +184,7 @@ def test_get_sanitized_file_name_part_convenience_function_needs_prompt() -> Non
     assert result == "NewValidTitle"
 
 
-def test_get_sanitized_file_name_part_convenience_function_empty_initial_value() -> (
-    None
-):
+def test_get_sanitized_file_name_part_convenience_function_empty_initial_value() -> None:
     """Test convenience function with empty initial value."""
     with patch("click.prompt", return_value="FilledValue"):
         result = get_sanitized_file_name_part(
