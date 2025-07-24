@@ -36,8 +36,8 @@ The script should locate the docs directory (`docs-dir`) into which to place the
     - If we find one, attempt to get the the `tool.pape-docs.docs-dir` value.
         - If we find it, use it as `docs-dir`.
         - If we don't find it, use the directory containing `pyproject.toml` as `docs-dir`.
-- Look for a `docs/` directory in the CWD and iteratively in parent directories.
-- Tell the users: "The script detected no `PAPE_DOCS_DIR` environment variable, no `pyproject.toml` in the current directory or any of its parents, and no `docs/` directory in the current directory or any of its parents. Please provide a docs directory to use. \[Default: ./docs/\]"
+- Look for a `pape-docs/` directory in the CWD and iteratively in parent directories.
+- Tell the users: "The script detected no `PAPE_DOCS_DIR` environment variable, no `pyproject.toml` in the current directory or any of its parents, and no `pape-docs/` directory in the current directory or any of its parents. Please provide a docs directory to use. \[Default: ./pape-docs/\]"
 
 Once we have a `docs-dir` value, check if the directory exists yet. If not, ask the user whether we should create it.
 

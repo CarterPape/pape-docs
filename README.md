@@ -10,14 +10,18 @@ The core functionality is provided by the `new-doc` script, which allows users t
 
 **Usage:**
 
-```bash
+```sh
 uvx pape-docs new
+```
+
+Or, with `pape-docs` installed via `uv` as a tool (see installation instructions below):
+
+```sh
+new-doc
 ```
 
 **Options:**
 
-- `--simple`: Use the simple template.
-- `--complex`: Use the complex template.
 - `--priority <PRIORITY>`: Optional priority number for the document (e.g., "0100", "????" for unknown).
 - `--doc-type <DOC_TYPE>`: Optional document type (e.g., "ADR", "Task", "Notes", "Bug").
 
@@ -34,20 +38,27 @@ The `new-doc` script is designed to support both interactive and non-interactive
 
 ### Flexible Docs Directory Location
 
-The script intelligently locates the `docs/` directory where new documents should be placed. The search order is:
+The script intelligently locates the `pape-docs/` directory where new documents should be placed. The search order is:
 
 1. An environment variable (`PAPE_DOCS_DIR`).
 2. A `pyproject.toml` file in the current or parent directories, looking for `[tool.pape-docs]."docs-dir"`.
-3. An existing `docs/` directory in the current or parent directories.
-4. If no `docs/` directory is found, the user is prompted to create one (defaulting to `./docs/`).
+3. An existing `pape-docs/` directory in the current or parent directories.
 
-### Packaged Templates
+If none is found, the script exits before the user wastes time entering other information
 
-Pape Docs comes with pre-defined `simple.md` and `complex.md` templates. These templates are bundled with the application and are not user-configurable. This design choice reinforces the opinionated nature of the tool, aiming to prescribe a simple and consistent documentation system.
+### Packaged Template
+
+Pape Docs comes with one pre-defined `doc.md` template. It's bundled with the application and are not user-configurable. This design choice reinforces the opinionated nature of the tool, aiming to prescribe a simple and consistent documentation system.
 
 ## Installation
 
-(Installation instructions will go here once the project is ready for distribution.)
+If you want to add `new-doc` (and `pape-docs`) to your `$PATH`, you can install this package as a `uv` tool.
+
+```sh
+uv tool install pape-docs
+```
+
+`uv` allows updating tools with `uv tool upgrade [tool-name]` or `uv tool upgrade --all`.
 
 ## Development
 
@@ -56,7 +67,7 @@ Pape Docs comes with pre-defined `simple.md` and `complex.md` templates. These t
 1. Clone the repository.
 2. Install dependencies using `uv` (or `pip`):
 
-    ```bash
+    ```sh
     uv pip install -e .
     uv pip install -e ".[dev]"
     ```
@@ -65,7 +76,7 @@ Pape Docs comes with pre-defined `simple.md` and `complex.md` templates. These t
 
 This project uses `ruff` for linting and formatting.
 
-```bash
+```sh
 ruff check .
 ruff format .
 ```
@@ -74,6 +85,6 @@ ruff format .
 
 Tests will be written using `pytest`.
 
-```bash
+```sh
 pytest
 ```

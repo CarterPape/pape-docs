@@ -5,4 +5,4 @@
 # See file LICENSE for licensing terms.
 # # # # # # # # # # # # # # # # # # # #
 
-"""Scripts for managing docs."""
+"""A set of helper functions for the main pape-docs CLI."""

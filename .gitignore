@@ -46,6 +46,7 @@ yolo-models/
 memory-bank/
 
 # Test artifacts
+.pytest_cache/
 
 # Test coverage artifacts
 .coverage
