@@ -11,7 +11,7 @@ from pathlib import Path
 
 import pytest
 
-from src.helpers.pape_docs_dir_finder import PapeDocsDirectoryFinder
+from pape_docs.helpers.pape_docs_dir_finder import PapeDocsDirectoryFinder
 
 
 @pytest.fixture

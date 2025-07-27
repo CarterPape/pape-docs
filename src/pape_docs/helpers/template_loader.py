@@ -7,19 +7,20 @@
 
 """A module that provides the `TemplateLoader` class and a convenience function."""
 
-import pathlib
+import importlib.resources
 from datetime import datetime
+from importlib.abc import Traversable
 
 import click
 import pape.utilities
 import tzlocal
 
-TEMPLATES_DIR = pathlib.Path(__file__).parent.parent.parent / "templates"
+TEMPLATES_DIR = importlib.resources.files("pape_docs") / "templates"
 
 
 def generate_document_content(
     *,
-    templates_dir: pathlib.Path = TEMPLATES_DIR,
+    templates_dir: Traversable = TEMPLATES_DIR,
     doc_type: str | None = None,
 ) -> str:
     """Invoke a convenience function for `TemplateLoader.generate_document_content`."""
@@ -34,7 +35,7 @@ class TemplateLoader:
     def __init__(
         self,
         *,
-        templates_dir: pathlib.Path = TEMPLATES_DIR,
+        templates_dir: Traversable = TEMPLATES_DIR,
     ) -> None:
         """Create a template loader from a directory containing the main template."""
         self.templates_dir = templates_dir
@@ -48,7 +49,7 @@ class TemplateLoader:
         doc_type = with_doc_type
         template_file = self.templates_dir / "doc.md"
 
-        if not template_file.exists():
+        if not template_file.is_file():
             click.echo(f"Error: Template file '{template_file}' not found.")
             raise click.Abort
 

@@ -13,7 +13,7 @@ from unittest.mock import patch
 import click
 import pytest
 
-from src.helpers.dir_write_tester import perform_write_test
+from pape_docs.helpers.dir_write_tester import perform_write_test
 
 
 def test_perform_write_test_success(tmp_path: pathlib.Path) -> None:

@@ -10,7 +10,10 @@
 import io
 from unittest.mock import patch
 
-from src.helpers.file_name_part_retriever import FileNamePartRetriever, get_sanitized_file_name_part
+from pape_docs.helpers.file_name_part_retriever import (
+    FileNamePartRetriever,
+    get_sanitized_file_name_part,
+)
 
 
 def test_file_name_part_retriever_init_with_initial_value() -> None:

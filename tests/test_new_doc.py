@@ -17,7 +17,7 @@ import click
 import pytest
 from click.testing import CliRunner
 
-from src import new_doc
+import pape_docs
 
 
 @pytest.fixture
@@ -39,7 +39,9 @@ def mock_pape_docs_dir_finder() -> Generator[mock.MagicMock | mock.AsyncMock]:
 
     By default, the search method returns None, simulating no docs directory found.
     """
-    with mock.patch("src.new_doc.pape_docs_dir_finder.PapeDocsDirectoryFinder") as _mock_class:
+    with mock.patch(
+        "pape_docs.helpers.pape_docs_dir_finder.PapeDocsDirectoryFinder",
+    ) as _mock_class:
         _mock_class.return_value.search.return_value = None
         yield _mock_class
 
@@ -51,21 +53,21 @@ def mock_os_getenv() -> Generator[mock.MagicMock | mock.AsyncMock]:
 
     By default, it returns None, simulating the variable not being set.
     """
-    with mock.patch("src.new_doc.os.getenv", return_value=None) as _mock:
+    with mock.patch("os.getenv", return_value=None) as _mock:
         yield _mock
 
 
 @pytest.fixture(autouse=True)
 def mock_ensure_docs_directory_exists() -> Generator[mock.MagicMock | mock.AsyncMock]:
     """Mock docs_dir_guard.ensure_docs_directory_exists."""
-    with mock.patch("src.new_doc.docs_dir_guard.ensure_docs_directory_exists") as _mock:
+    with mock.patch("pape_docs.helpers.docs_dir_guard.ensure_docs_directory_exists") as _mock:
         yield _mock
 
 
 @pytest.fixture(autouse=True)
 def mock_perform_write_test() -> Generator[mock.MagicMock | mock.AsyncMock]:
     """Mock dir_write_tester.perform_write_test."""
-    with mock.patch("src.new_doc.dir_write_tester.perform_write_test") as _mock:
+    with mock.patch("pape_docs.helpers.dir_write_tester.perform_write_test") as _mock:
         yield _mock
 
 
@@ -77,7 +79,7 @@ def mock_get_sanitized_file_name_part() -> Generator[mock.MagicMock | mock.Async
     By default, it returns the initial_value passed to it.
     """
     with mock.patch(
-        "src.new_doc.file_name_part_retriever.get_sanitized_file_name_part",
+        "pape_docs.helpers.file_name_part_retriever.get_sanitized_file_name_part",
         side_effect=lambda initial_value, **_kwargs: initial_value,
     ) as _mock:
         yield _mock
@@ -87,7 +89,7 @@ def mock_get_sanitized_file_name_part() -> Generator[mock.MagicMock | mock.Async
 def mock_generate_document_content() -> Generator[mock.MagicMock | mock.AsyncMock]:
     """Mock template_loader.generate_document_content."""
     with mock.patch(
-        "src.new_doc.template_loader.generate_document_content",
+        "pape_docs.helpers.template_loader.generate_document_content",
         return_value="Generated content",
     ) as _mock:
         yield _mock
@@ -103,7 +105,7 @@ class TestGetDocsDirectory:
     ) -> None:
         """It returns the path from PAPE_DOCS_DIR environment variable."""
         mock_os_getenv.return_value = str(temp_dir / "env_docs")
-        result = new_doc._get_docs_directory()
+        result = pape_docs._get_docs_directory()
         assert result == temp_dir / "env_docs"
         mock_os_getenv.assert_called_once_with("PAPE_DOCS_DIR")
 
@@ -116,7 +118,7 @@ class TestGetDocsDirectory:
         """It returns the path from `PapeDocsDirectoryFinder.search` if env var is not set."""
         mock_os_getenv.return_value = None  # Ensure env var is not set
         mock_pape_docs_dir_finder.return_value.search.return_value = temp_dir / "finder_docs"
-        result = new_doc._get_docs_directory()
+        result = pape_docs._get_docs_directory()
         assert result == temp_dir / "finder_docs"
         mock_pape_docs_dir_finder.return_value.search.assert_called_once_with(
             starting_at_directory=pathlib.Path.cwd(),
@@ -124,7 +126,7 @@ class TestGetDocsDirectory:
 
     def test_no_docs_directory_found(self) -> None:
         """It returns None if no docs directory is found."""
-        result = new_doc._get_docs_directory()
+        result = pape_docs._get_docs_directory()
         assert result is None
 
 
@@ -133,7 +135,7 @@ class TestProcessInvocationArguments:
 
     def test_all_args_provided(self) -> None:
         """It returns sanitized values when all arguments are provided."""
-        short_title, priority, doc_type = new_doc._process_invocation_arguments(
+        short_title, priority, doc_type = pape_docs._process_invocation_arguments(
             "My Title",
             "001",
             "RFC",
@@ -145,7 +147,7 @@ class TestProcessInvocationArguments:
     def test_doc_type_prompted(self, monkeypatch: pytest.MonkeyPatch) -> None:
         """It prompts for doc_type if not provided."""
         monkeypatch.setattr(click, "prompt", lambda *_args, **_kwargs: "Note")
-        short_title, priority, doc_type = new_doc._process_invocation_arguments(
+        short_title, priority, doc_type = pape_docs._process_invocation_arguments(
             "My Title",
             "001",
             None,
@@ -157,7 +159,7 @@ class TestProcessInvocationArguments:
     def test_doc_type_prompt_default(self, monkeypatch: pytest.MonkeyPatch) -> None:
         """It uses default for doc_type prompt if user enters nothing."""
         monkeypatch.setattr(click, "prompt", lambda *_args, **_kwargs: None)
-        short_title, priority, doc_type = new_doc._process_invocation_arguments(
+        short_title, priority, doc_type = pape_docs._process_invocation_arguments(
             "My Title",
             "001",
             None,
@@ -180,7 +182,7 @@ class TestNewDocCommand:
         mock_os_getenv.return_value = None
         mock_pape_docs_dir_finder.return_value.search.return_value = None
 
-        result = runner.invoke(new_doc.new_doc_command, ["test-title"])
+        result = runner.invoke(pape_docs.new_doc_command, ["test-title"])
         assert result.exit_code == 1
         assert "The script detected no PAPE_DOCS_DIR environment variable" in result.output
 
@@ -199,7 +201,7 @@ class TestNewDocCommand:
         (temp_dir / "my_docs").mkdir()  # Simulate docs dir creation
 
         result = runner.invoke(
-            new_doc.new_doc_command,
+            pape_docs.new_doc_command,
             ["my-test-doc", "--priority", "001", "--doc-type", "Note"],
         )
 
@@ -246,7 +248,7 @@ class TestNewDocCommand:
         monkeypatch.setattr(click, "confirm", mock_confirm)
 
         result = runner.invoke(
-            new_doc.new_doc_command,
+            pape_docs.new_doc_command,
             ["existing-doc", "--priority", "001", "--doc-type", "note"],
         )
 
@@ -280,7 +282,7 @@ class TestNewDocCommand:
         monkeypatch.setattr(click, "confirm", mock_confirm)
 
         result = runner.invoke(
-            new_doc.new_doc_command,
+            pape_docs.new_doc_command,
             ["existing-doc", "--priority", "001", "--doc-type", "Note"],
         )
 
@@ -304,7 +306,7 @@ class TestNewDocCommand:
         mock_os_getenv.return_value = None
         mock_pape_docs_dir_finder.return_value.search.return_value = None
 
-        result = runner.invoke(new_doc.cli, ["new", "test-title"])
+        result = runner.invoke(pape_docs.cli, ["new", "test-title"])
         assert result.exit_code == 1
         assert "The script detected no PAPE_DOCS_DIR environment variable" in result.output
 
@@ -312,8 +314,8 @@ class TestNewDocCommand:
 @pytest.mark.usefixtures("runner")
 def test_main_invokes_cli() -> None:
     """Test that main function invokes the cli group."""
-    with mock.patch.object(new_doc, "cli") as mock_cli:
-        new_doc.main()
+    with mock.patch.object(pape_docs, "cli") as mock_cli:
+        pape_docs.main()
         mock_cli.assert_called_once()
 
 
@@ -335,7 +337,7 @@ def test_script_main_entry_point(
     result = subprocess.run(  # noqa: S603
         [
             sys.executable,
-            str(pathlib.Path("src") / "new_doc.py"),
+            str(pathlib.Path("src") / "pape_docs" / "__init__.py"),
             "new",
             "test-subprocess-doc",
             "--priority",

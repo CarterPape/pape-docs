@@ -16,7 +16,7 @@ from unittest.mock import AsyncMock, MagicMock, patch
 import click
 import pytest
 
-from src.helpers.template_loader import TemplateLoader, generate_document_content
+from pape_docs.helpers.template_loader import TemplateLoader, generate_document_content
 
 
 @pytest.fixture

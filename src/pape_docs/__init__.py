@@ -12,7 +12,7 @@ from pathlib import Path
 
 import click
 
-from helpers import (
+from pape_docs.helpers import (
     dir_write_tester,
     docs_dir_guard,
     file_name_part_retriever,

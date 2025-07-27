@@ -14,7 +14,7 @@ Also, any file type value should be acceptable because that gets written to the 
 
 ## Details
 
-The `FileNamePartRetriever` class in `src/helpers/file_name_part_retriever.py` handles the sanitization of file name components. It uses the `pathvalidate.sanitize_filename` function to ensure that the provided file name parts are compatible with the operating system's file naming conventions.
+The `FileNamePartRetriever` class in `src/pape_docs/helpers/file_name_part_retriever.py` handles the sanitization of file name components. It uses the `pathvalidate.sanitize_filename` function to ensure that the provided file name parts are compatible with the operating system's file naming conventions.
 
 The implementation includes an interactive workflow:
 

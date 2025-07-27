@@ -13,7 +13,7 @@ from unittest.mock import patch
 import click
 import pytest
 
-from src.helpers.docs_dir_guard import ensure_docs_directory_exists
+from pape_docs.helpers.docs_dir_guard import ensure_docs_directory_exists
 
 
 def test_ensure_docs_directory_exists_already_exists(tmp_path: pathlib.Path) -> None:
