@@ -87,56 +87,78 @@ class PapeDocsDirectoryFinder:
 
     def _explicit_value_from_current_directory(self) -> pathlib.Path | None:
         return (
-            self._value_from_dot_env()
-            or self._value_from_dot_pape_docs()
-            or self._value_from_pyproject_toml()
+            self.value_from_dot_env(self._current_directory / ".env")
+            or self.value_from_dot_pape_docs(self._current_directory / ".pape-docs")
+            or self.value_from_pyproject_toml(self._current_directory / "pyproject.toml")
         )
 
-    def _value_from_dot_env(self) -> pathlib.Path | None:
-        dotenv_path = self._current_directory / ".env"
-        if not dotenv_path.exists():
+    @staticmethod
+    def value_from_dot_env(potential_dot_env_path: pathlib.Path) -> pathlib.Path | None:
+        """
+        Given a path to .env, provide the pape-docs directory definition provided in the file.
+
+        If the file doesn't exist, or there is no definition for the pape-docs directory in the
+        file, returns None.
+        """
+        if not potential_dot_env_path.exists():
             return None
 
-        dotenv_value = dotenv.main.DotEnv(dotenv_path).get("PAPE_DOCS_DIR")
+        dotenv_value = dotenv.main.DotEnv(potential_dot_env_path).get("PAPE_DOCS_DIR")
         if dotenv_value:
-            return self._current_directory / dotenv_value
+            return potential_dot_env_path.parent / dotenv_value
 
         _logger.info(
             "Found %s, but it didn't contain a PAPE_DOCS_DIR value. Skipping.",
-            dotenv_path,
+            potential_dot_env_path,
         )
         return None
 
-    def _value_from_dot_pape_docs(self) -> pathlib.Path | None:
-        dot_pape_docs_path = self._current_directory / ".pape-docs"
-        if not dot_pape_docs_path.exists():
+    @staticmethod
+    def value_from_dot_pape_docs(
+        potential_dot_pape_docs_path: pathlib.Path,
+    ) -> pathlib.Path | None:
+        """
+        Given a path to .pape-docs, provide the pape-docs directory definition provided in the file.
+
+        If the file doesn't exist, or there is no definition for the pape-docs directory in the
+        file, returns None.
+        """
+        if not potential_dot_pape_docs_path.exists():
             return None
 
-        dot_pape_docs_contents = dot_pape_docs_path.read_text().strip()
+        dot_pape_docs_contents = potential_dot_pape_docs_path.read_text().strip()
         if dot_pape_docs_contents:
-            return self._current_directory / dot_pape_docs_contents
+            return potential_dot_pape_docs_path.parent / dot_pape_docs_contents
 
         _logger.info(
             "Found %s, but it was empty. Skipping.",
-            dot_pape_docs_path,
+            potential_dot_pape_docs_path,
         )
         return None
 
-    def _value_from_pyproject_toml(self) -> pathlib.Path | None:
-        pyproject_path = self._current_directory / "pyproject.toml"
-        if not pyproject_path.exists():
+    @staticmethod
+    def value_from_pyproject_toml(
+        potential_pyproject_toml_path: pathlib.Path,
+    ) -> pathlib.Path | None:
+        """
+        Given a pyprojec.toml, provide the `pape-docs` directory path provided in the file.
+
+        If the file doesn't exist, or there is no definition for the pape-docs directory in the
+        file, returns None.
+        """
+        if not potential_pyproject_toml_path.exists():
             return None
 
-        with pyproject_path.open("r", encoding="utf-8") as f:
+        with potential_pyproject_toml_path.open("r", encoding="utf-8") as f:
             pyproject_content = tomllib.loads(f.read())
 
         tool_config = pyproject_content.get("tool", {}).get("pape-docs", {})
         if "docs-dir" in tool_config:
-            return self._current_directory / tool_config["docs-dir"]
+            return potential_pyproject_toml_path.parent / tool_config["docs-dir"]
 
         _logger.info(
             "Found %s, but it didn't contain [tool.pape-docs].docs-dir. Skipping.",
-            pyproject_path,
+            potential_pyproject_toml_path,
         )
         return None
 
